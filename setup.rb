@@ -7,8 +7,8 @@ require 'yaml'
 config = YAML.load_file('./config.yml')
 
 # Get json which is infomation of vulnerability database (nvd)
-FileUtils.mkdir_p("./#{config['src_dir']}/nvd") unless Dir.exist?("./#{config['src_dir']}/nvd")
-Dir.chdir("./#{config['src_dir']}/nvd") do 
+FileUtils.mkdir_p("./#{config['src_path']}/nvd") unless Dir.exist?("./#{config['src_path']}/nvd")
+Dir.chdir("./#{config['src_path']}/nvd") do 
   for year in config['nvd']['year']['oldest'].to_i..config['nvd']['year']['current'].to_i do
     Open3.capture3("wget #{config['nvd']['url']}/nvdcve-1.0-#{year}.json.zip")
     Open3.capture3("unzip nvdcve-1.0-#{year}.json.zip")
@@ -16,9 +16,9 @@ Dir.chdir("./#{config['src_dir']}/nvd") do
   end
 end
 
-FileUtils.mkdir_p("./#{config['db_dir']}") unless Dir.exist?("./#{config['db_dir']}")
+FileUtils.mkdir_p("./#{config['db_path']}") unless Dir.exist?("./#{config['db_path']}")
 # database which is infomation of CVE
-db = SQLite3::Database.new("./#{config['db_dir']}/cve.sqlite3")
+db = SQLite3::Database.new("./#{config['db_path']}/cve.sqlite3")
 sql = <<-SQL
 CREATE TABLE cve (
 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -33,7 +33,7 @@ sql = <<-SQL
 INSERT INTO cve (cve, nvd_id, description) values (?, ?, ?)
 SQL
 for year in config['nvd']['year']['oldest'].to_i..config['nvd']['year']['current'].to_i do
-  File.open("./#{config['src_dir']}/nvd/nvdcve-1.0-#{year}.json") do |file|
+  File.open("./#{config['src_path']}/nvd/nvdcve-1.0-#{year}.json") do |file|
     cve_hash = JSON.load(file)
     db.transaction do
       cve_hash['CVE_Items'].each_with_index do |cve_item, nvd_id|
@@ -50,7 +50,7 @@ end
 db.close
 
 # CWE database
-db = SQLite3::Database.new("./#{config['db_dir']}/cwe.sqlite3")
+db = SQLite3::Database.new("./#{config['db_path']}/cwe.sqlite3")
 sql = <<-SQL
 CREATE TABLE cwe (
 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -64,7 +64,7 @@ sql = <<-SQL
 INSERT INTO cwe (cve, cwe) values (?, ?)
 SQL
 for year in config['nvd']['year']['oldest'].to_i..config['nvd']['year']['current'].to_i do
-  File.open("./#{config['src_dir']}/nvd/nvdcve-1.0-#{year}.json") do |file|
+  File.open("./#{config['src_path']}/nvd/nvdcve-1.0-#{year}.json") do |file|
     cve_hash = JSON.load(file)
     db.transaction do
       cve_hash['CVE_Items'].each do |cve_item|
@@ -81,7 +81,7 @@ end
 db.close
 
 # cpe database
-db = SQLite3::Database.new("./#{config['db_dir']}/cpe.sqlite3")
+db = SQLite3::Database.new("./#{config['db_path']}/cpe.sqlite3")
 sql = <<-SQL
 CREATE TABLE cpe (
 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -95,15 +95,15 @@ sql = <<-SQL
 INSERT INTO cpe (cve, cpe) values (?, ?)
 SQL
 for year in config['nvd']['year']['oldest'].to_i..config['nvd']['year']['current'].to_i do
-  File.open("./#{config['src_dir']}/nvd/nvdcve-1.0-#{year}.json") do |file|
+  File.open("./#{config['src_path']}/nvd/nvdcve-1.0-#{year}.json") do |file|
     cve_hash = JSON.load(file)
     db.transaction do
       cve_hash['CVE_Items'].each do |cve_item|
         cve = cve_item['cve']['CVE_data_meta']['ID']
         cve_item['configurations']['nodes'].each do |node|
-          if node.key?('cpe')
-            node['cpe'].each do |cpe|
-              db.execute(sql, cve, cpe['cpe22Uri'])
+          if node.key?('cpe_match')
+            node['cpe_match'].each do |cpe|
+              db.execute(sql, cve, cpe['cpe23Uri'])
             end
           end
         end
@@ -116,7 +116,7 @@ db.close
 
 
 # CVSS v2
-db = SQLite3::Database.new("./#{config['db_dir']}/cvss_v2.sqlite3")
+db = SQLite3::Database.new("./#{config['db_path']}/cvss_v2.sqlite3")
 sql = <<-SQL
 CREATE TABLE cvss_v2 (
 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -139,7 +139,7 @@ INSERT INTO cvss_v2 (cve, vector_string, access_vector, access_complexity, authe
 values (?, ?, ?, ?, ?, ?, ?, ?, ?)
 SQL
 for year in config['nvd']['year']['oldest'].to_i..config['nvd']['year']['current'].to_i do
-  File.open("./#{config['src_dir']}/nvd/nvdcve-1.0-#{year}.json") do |file|
+  File.open("./#{config['src_path']}/nvd/nvdcve-1.0-#{year}.json") do |file|
     cve_hash = JSON.load(file)
     db.transaction do
       cve_hash['CVE_Items'].each do |cve_item|
@@ -156,7 +156,7 @@ end
 db.close
 
 # CVSS v3
-db = SQLite3::Database.new("./#{config['db_dir']}/cvss_v3.sqlite3")
+db = SQLite3::Database.new("./#{config['db_path']}/cvss_v3.sqlite3")
 sql = <<-SQL
 CREATE TABLE cvss_v3 (
 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -182,7 +182,7 @@ scope, confidentiality_impact, integrity_impact, availability_impact, base_score
 values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 SQL
 for year in config['nvd']['year']['oldest'].to_i..config['nvd']['year']['current'].to_i do
-  File.open("./#{config['src_dir']}/nvd/nvdcve-1.0-#{year}.json") do |file|
+  File.open("./#{config['src_path']}/nvd/nvdcve-1.0-#{year}.json") do |file|
     cve_hash = JSON.load(file)
     db.transaction do
       cve_hash['CVE_Items'].each do |cve_item|
@@ -199,7 +199,7 @@ for year in config['nvd']['year']['oldest'].to_i..config['nvd']['year']['current
 end
 db.close
 
-db = SQLite3::Database.new("./#{config['db_dir']}/vultest.sqlite3")
+db = SQLite3::Database.new("./#{config['db_path']}/vultest.sqlite3")
 
 sql = <<SQL
 CREATE TABLE configs (
@@ -213,8 +213,8 @@ SQL
 db.execute(sql)
 
 sql = 'INSERT INTO configs (cve_name, name, config_path, module_path) values (? ,?, ?, ?)'
-data = YAML.load_file("./#{config['src_dir']}/vultest/vultest_data.yml")
+data = YAML.load_file("./#{config['src_path']}/vultest/vultest_data.yml")
 data.each do |vuldata|
-  db.execute(sql, vuldata['vuln']['cve'], vuldata['vuln']['name'], vuldata['vuln']['data']['env_dir'], vuldata['vuln']['data']['attack_dir'])
+  db.execute(sql, vuldata['vuln']['cve'], vuldata['vuln']['name'], vuldata['vuln']['data']['env_path'], vuldata['vuln']['data']['attack_path'])
 end
 db.close

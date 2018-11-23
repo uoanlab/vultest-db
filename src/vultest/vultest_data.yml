@@ -3,72 +3,72 @@
     cve: CVE-2014-6271
     name: metepreter
     data:
-      env_dir: data/env/shellshock.yml
-      attack_dir: config/attack/shellshock.yml
+      env_path: data/env/shellshock.yml
+      attack_path: data/attack/shellshock.yml
 - vuln: 
     cve: CVE-2014-6271
     name: shell_bind_tcp
     data:
-      env_dir: data/env/shellshock.yml
-      attack_dir: config/attack/shellshock-shell.yml
+      env_path: data/env/shellshock.yml
+      attack_path: data/attack/shellshock-shell.yml
 - vuln: 
     cve: CVE-2015-1318
     name: CVE-2015-1318
     data:
-      env_dir: data/env/cve-2015-1318.yml
-      attack_dir: config/attack/cve-2015-1318-module.yml
+      env_path: data/env/cve-2015-1318.yml
+      attack_path: data/attack/cve-2015-1318-module.yml
 - vuln: 
     cve: CVE-2015-1328
     name: CVE-2015-1328
     data:
-      env_dir: data/env/cve-2015-1328.yml
-      attack_dir: config/attack/cve-2015-1328-module.yml
+      env_path: data/env/cve-2015-1328.yml
+      attack_path: data/attack/cve-2015-1328-module.yml
 - vuln: 
     cve: CVE-2015-3224
     name: rails
     data:
-      env_dir: data/env/cve-2015-3324.yml
-      attack_dir: config/attack/cve-2015-3324-module.yml
+      env_path: data/env/cve-2015-3324.yml
+      attack_path: data/attack/cve-2015-3324-module.yml
 - vuln: 
     cve: CVE-2016-0752
     name: rails
     data:
-      env_dir: data/env/cve-2016-0752.yml
-      attack_dir: config/attack/cve-2016-0752-module.yml
+      env_path: data/env/cve-2016-0752.yml
+      attack_path: data/attack/cve-2016-0752-module.yml
 - vuln: 
     cve: CVE-2016-4557
     name: CVE-2016-4557
     data:
-      env_dir: data/env/cve-2016-4557.yml
-      attack_dir: config/attack/cve-2016-4557-module.yml
+      env_path: data/env/cve-2016-4557.yml
+      attack_path: data/attack/cve-2016-4557-module.yml
 - vuln: 
     cve: CVE-2016-8655
     name: CVE-2016-8655
     data:
-      env_dir: data/env/cve-2016-8655.yml
-      attack_dir: config/attack/cve-2016-8655-module.yml
+      env_path: data/env/cve-2016-8655.yml
+      attack_path: data/attack/cve-2016-8655-module.yml
 - vuln: 
     cve: CVE-2017-7308
     name: CVE-2017-7308
     data:
-      env_dir: data/env/cve-2017-7308.yml
-      attack_dir: config/attack/cve-2017-7308-module.yml
+      env_path: data/env/cve-2017-7308.yml
+      attack_path: data/attack/cve-2017-7308-module.yml
 - vuln: 
     cve: CVE-2017-11467
     name: CVE-2017-11467
     data:
-      env_dir: data/env/cve-2017-11467.yml
-      attack_dir: config/attack/cve-2017-11467-module.yml
+      env_path: data/env/cve-2017-11467.yml
+      attack_path: data/attack/cve-2017-11467-module.yml
 - vuln: 
     cve: CVE-2017-100112
     name: CVE-2017-100112
     data:
-      env_dir: data/env/cve-2017-100112.yml
-      attack_dir: config/attack/cve-2017-100112-module.yml
+      env_path: data/env/cve-2017-100112.yml
+      attack_path: data/attack/cve-2017-100112-module.yml
 - vuln: 
     cve: CVE-2017-16995
     name: CVE-2017-16995
     data:
-      env_dir: data/env/cve-2017-16995.yml
-      attack_dir: config/attack/cve-2017-16995-module.yml
+      env_path: data/env/cve-2017-16995.yml
+      attack_path: data/attack/cve-2017-16995-module.yml
 

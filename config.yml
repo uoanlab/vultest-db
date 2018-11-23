@@ -1,6 +1,6 @@
 ---
-src_dir: ./src
-db_dir: ./db
+src_path: ./src
+db_path: ./db
 
 nvd:
   url: https://nvd.nist.gov/feeds/json/cve/1.0
