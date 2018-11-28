@@ -1,3 +1,5 @@
+require 'bundler/setup'
+
 require 'fileutils'
 require 'json'
 require 'open3'
