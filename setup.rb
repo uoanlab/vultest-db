@@ -206,7 +206,7 @@ db = SQLite3::Database.new("./#{config['db_path']}/vultest.sqlite3")
 sql = <<SQL
 CREATE TABLE configs (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  cve_name VARCHAR(200) NOT NULL,
+  cve VARCHAR(200) NOT NULL,
   name VARCHAR(200) NOT NULL,
   config_path VARCHAR(200) NOT NULL,
   module_path VARCHAR(200) NOT NULL
@@ -214,7 +214,7 @@ CREATE TABLE configs (
 SQL
 db.execute(sql)
 
-sql = 'INSERT INTO configs (cve_name, name, config_path, module_path) values (? ,?, ?, ?)'
+sql = 'INSERT INTO configs (cve, name, config_path, module_path) values (? ,?, ?, ?)'
 data = YAML.load_file("./#{config['src_path']}/vultest/vultest_data.yml")
 data.each do |vuldata|
   db.execute(sql, vuldata['vuln']['cve'], vuldata['vuln']['name'], vuldata['vuln']['data']['env_path'], vuldata['vuln']['data']['attack_path'])
