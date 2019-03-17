@@ -1,0 +1,14 @@
+# ruby version
+.ruby-version
+
+# gem package
+.bundle
+vendor
+Gemfile.lock
+
+
+# NVDのデータベースのデータ
+src/nvd
+
+# 作成するデータベースのデータ
+db
