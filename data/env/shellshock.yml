@@ -17,7 +17,7 @@ construction:
         version: 2.2.15
         configure_command: "./configure --prefix=/opt/httpd"
         src_dir: false
-  content: setting/CVE-2014-6271/shellshock
+  content: content/CVE-2014-6271/shellshock
 report:
   msg:
     - Exist cgi file
