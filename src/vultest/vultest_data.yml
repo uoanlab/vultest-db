@@ -18,12 +18,6 @@
       env_path: data/env/cve-2015-3324.yml
       attack_path: data/attack/cve-2015-3324-module.yml
 - vuln: 
-    cve: CVE-2016-0752
-    name: rails
-    data:
-      env_path: data/env/cve-2016-0752.yml
-      attack_path: data/attack/cve-2016-0752-module.yml
-- vuln: 
     cve: CVE-2017-11467
     name: CVE-2017-11467
     data:
