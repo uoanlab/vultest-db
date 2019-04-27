@@ -12,3 +12,20 @@ src/nvd
 
 # 作成するデータベースのデータ
 db
+
+# 現在攻撃できない脆弱性
+data/env/cve-2016-4557.yml
+data/attack/cve-2016-4557-module.yml
+data/env/cve-2016-8655.yml
+data/attack/cve-2016-8655-module.yml
+data/env/cve-2017-0358.yml
+data/attack/cve-2017-0358-module.yml
+data/env/cve-2017-1000112.yml
+data/attack/cve-2017-1000112-module.yml
+data/env/cve-2017-16995.yml
+data/attack/cve-2017-16995-module.yml
+data/env/cve-2017-7308.yml
+data/attack/cve-2017-7308-module.yml
+data/env/shellshock.yml
+data/attack/shellshock-shell.yml
+data/attack/shellshock.yml
