@@ -14,4 +14,4 @@ src/nvd
 db
 
 # 現在攻撃できない脆弱性
-./data/unable/.
+./data/unable
