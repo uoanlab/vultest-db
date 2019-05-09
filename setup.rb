@@ -12,12 +12,6 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-
-Copyright (c) 2004, Jamis Buck (jamis@jamisbuck.org)
-Relased under the BSD license
-https://github.com/sparklemotion/sqlite3-ruby/blob/master/LICENSE
-
-This software includes the work that is distributed in the Apache License 2.0
 =end
 
 
