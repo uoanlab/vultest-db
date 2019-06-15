@@ -1,8 +1,17 @@
-# vultest-db
+# Copyright
+University of Aizu, 2019
 
-# LICENSE
-Guard object of logger for debugging.  
-Copyright (c) 2019 University of Aizu
+# License
+[Apache License, Version 2.0](https://www.apache.org/licenses/)
 
-# Author
-KOHEI Akasaka <redsloop.ko@gmail.com>
+# Documents
+- [Wiki](https://github.com/uoanlab/vultest-db/wiki)
+
+# Related products
+- [vultest](https://github.com/uoanlab/vultest)
+
+
+# Authors & Contributors
+- Kohei AKASAKA <redsloop.ko@gmail.com>
+- Akihito NAKAMURA <nakamura@u-aizu.ac.jp>
+
