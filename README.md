@@ -7,7 +7,7 @@ University of Aizu, 2019
 # Documents
 - [Wiki](https://github.com/uoanlab/vultest-db/wiki)
 
-# Related products
+# Related product
 - [vultest](https://github.com/uoanlab/vultest): Automation tool for software vulnerability tests
 
 
