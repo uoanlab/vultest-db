@@ -23,4 +23,9 @@
     data:
       env_path: data/env/cve-2017-11467.yml
       attack_path: data/attack/cve-2017-11467-module.yml
-
+- vuln:
+    cve: CVE-2014-6271
+    name: shellshock
+    data:
+      env_path: data/env/shellshock.yml
+      attack_path: data/attack/shellshock.yml

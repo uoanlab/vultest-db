@@ -1,0 +1,28 @@
+cve: CVE-2014-6271
+attack_vector: remote
+
+reload: true
+construction:
+  os:
+    name: centos
+    version: 6.5
+    default_method: yum
+  vul_software:
+    name: bash
+    version: 4.3.20
+    method: source
+  related_software:
+    - name: gcc
+      version: 4.4.7-23.el6
+    - name: make
+      version: 3.81-23.el6
+    - name: pcre
+      version: 7.8-6.el6
+    - name: wget
+      version: 1.12-10.el6
+    - name: apache-httpd
+      version: 2.2.15
+      configure_command: "./configure --prefix=/opt/httpd"
+      method: source
+  content: content/CVE-2014-6271/shellshock
+
