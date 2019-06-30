@@ -22,7 +22,6 @@ require 'yaml'
 
 config = YAML.load_file('./config.yml')
 
-# Get json which is infomation of vulnerability database (nvd)
 FileUtils.mkdir_p("./#{config['src_path']}/nvd") unless Dir.exist?("./#{config['src_path']}/nvd")
 Dir.chdir("./#{config['src_path']}/nvd") do 
   for year in config['nvd']['year']['oldest'].to_i..config['nvd']['year']['current'].to_i do
@@ -33,7 +32,6 @@ Dir.chdir("./#{config['src_path']}/nvd") do
 end
 
 FileUtils.mkdir_p("./#{config['db_path']}") unless Dir.exist?("./#{config['db_path']}")
-# database which is infomation of CVE
 db = SQLite3::Database.new("./#{config['db_path']}/cve.sqlite3")
 sql = <<-SQL
 CREATE TABLE cve (
@@ -53,12 +51,8 @@ for year in config['nvd']['year']['oldest'].to_i..config['nvd']['year']['current
     cve_hash = JSON.load(file)
     db.transaction do
       cve_hash['CVE_Items'].each_with_index do |cve_item, nvd_id|
-        # get CVE
         cve = cve_item['cve']['CVE_data_meta']['ID']
-        # description of vulnerability
-        cve_item['cve']['description']['description_data'].each do |description|
-          db.execute(sql, cve, nvd_id, description['value'])
-        end
+        cve_item['cve']['description']['description_data'].each { |description| db.execute(sql, cve, nvd_id, description['value']) }
       end
     end
   end
@@ -86,9 +80,7 @@ for year in config['nvd']['year']['oldest'].to_i..config['nvd']['year']['current
       cve_hash['CVE_Items'].each do |cve_item|
         cve = cve_item['cve']['CVE_data_meta']['ID']
         cve_item['cve']['problemtype']['problemtype_data'].each do |problemtype_data|
-          problemtype_data['description'].each do |cwe_description|
-            db.execute(sql, cve, cwe_description['value'])
-          end
+          problemtype_data['description'].each { |cwe_description| db.execute(sql, cve, cwe_description['value']) }
         end
       end
     end
@@ -96,7 +88,6 @@ for year in config['nvd']['year']['oldest'].to_i..config['nvd']['year']['current
 end
 db.close
 
-# cpe database
 db = SQLite3::Database.new("./#{config['db_path']}/cpe.sqlite3")
 sql = <<-SQL
 CREATE TABLE cpe (
@@ -117,11 +108,7 @@ for year in config['nvd']['year']['oldest'].to_i..config['nvd']['year']['current
       cve_hash['CVE_Items'].each do |cve_item|
         cve = cve_item['cve']['CVE_data_meta']['ID']
         cve_item['configurations']['nodes'].each do |node|
-          if node.key?('cpe_match')
-            node['cpe_match'].each do |cpe|
-              db.execute(sql, cve, cpe['cpe23Uri'])
-            end
-          end
+        node['cpe_match'].each { |cpe| db.execute(sql, cve, cpe['cpe23Uri']) } if node.key?('cpe_match')
         end
       end
     end
@@ -130,8 +117,6 @@ end
 
 db.close
 
-
-# CVSS v2
 db = SQLite3::Database.new("./#{config['db_path']}/cvss_v2.sqlite3")
 sql = <<-SQL
 CREATE TABLE cvss_v2 (
@@ -171,7 +156,6 @@ for year in config['nvd']['year']['oldest'].to_i..config['nvd']['year']['current
 end
 db.close
 
-# CVSS v3
 db = SQLite3::Database.new("./#{config['db_path']}/cvss_v3.sqlite3")
 sql = <<-SQL
 CREATE TABLE cvss_v3 (
@@ -230,7 +214,5 @@ db.execute(sql)
 
 sql = 'INSERT INTO configs (cve, name, config_path, module_path) values (? ,?, ?, ?)'
 data = YAML.load_file("./#{config['src_path']}/vultest/vultest_data.yml")
-data.each do |vuldata|
-  db.execute(sql, vuldata['vuln']['cve'], vuldata['vuln']['name'], vuldata['vuln']['data']['env_path'], vuldata['vuln']['data']['attack_path'])
-end
+data.each { |vuldata| db.execute(sql, vuldata['vuln']['cve'], vuldata['vuln']['name'], vuldata['vuln']['data']['env_path'], vuldata['vuln']['data']['attack_path']) }
 db.close
