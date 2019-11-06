@@ -6,4 +6,4 @@ nvd:
   url: https://nvd.nist.gov/feeds/json/cve/1.0
   year:
     oldest: 2002
-    current: 2018
+    current: 2019
