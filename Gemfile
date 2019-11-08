@@ -7,3 +7,6 @@ gem "fileutils"
 
 # Database
 gem "sqlite3"
+
+# zip
+gem 'rubyzip'
