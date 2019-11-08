@@ -6,12 +6,11 @@
 vendor
 Gemfile.lock
 
+# 作成するデータベースのデータ
+db/data
 
 # NVDのデータベースのデータ
-src/nvd
-
-# 作成するデータベースのデータ
-db
+db/src/nvd
 
 # 現在攻撃できない脆弱性
 data/unable
