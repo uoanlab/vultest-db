@@ -33,35 +33,115 @@ class DB
   def create_cve
     db = SQLite3::Database.new("./#{@config['db_path']}/cve.sqlite3")
     create_table_cve(db)
-    insert_cve(db)
+
+    insert_proc = proc do |cve_hash|
+      sql = <<-SQL
+      INSERT INTO cve (cve, nvd_id, description) values (?, ?, ?)
+      SQL
+
+      cve_hash['CVE_Items'].each_with_index do |cve_item, nvd_id|
+        cve = cve_item['cve']['CVE_data_meta']['ID']
+        cve_item['cve']['description']['description_data'].each { |description| db.execute(sql, cve, nvd_id, description['value']) }
+      end
+    end
+    shared_insert_nvd(db, &insert_proc)
+
     db.close
   end
 
   def create_cwe
     db = SQLite3::Database.new("./#{@config['db_path']}/cwe.sqlite3")
     create_table_cwe(db)
-    insert_cwe(db)
+
+    insert_proc = proc do |cve_hash|
+      sql = <<-SQL
+      INSERT INTO cwe (cve, cwe) values (?, ?)
+      SQL
+
+      cve_hash['CVE_Items'].each do |cve_item|
+        cve = cve_item['cve']['CVE_data_meta']['ID']
+        cve_item['cve']['problemtype']['problemtype_data'].each do |problemtype_data|
+          problemtype_data['description'].each { |cwe_description| db.execute(sql, cve, cwe_description['value']) }
+        end
+      end
+    end
+    shared_insert_nvd(db, &insert_proc)
+
     db.close
   end
 
   def create_cpe
     db = SQLite3::Database.new("./#{@config['db_path']}/cpe.sqlite3")
     create_table_cpe(db)
-    insert_cpe(db)
+
+    insert_proc = proc do |cve_hash|
+      sql = <<-SQL
+      INSERT INTO cpe (cve, cpe) values (?, ?)
+      SQL
+
+      cve_hash['CVE_Items'].each do |cve_item|
+        cve = cve_item['cve']['CVE_data_meta']['ID']
+        cve_item['configurations']['nodes'].each do |node|
+          node['cpe_match'].each { |cpe| db.execute(sql, cve, cpe['cpe23Uri']) } if node.key?('cpe_match')
+        end
+      end
+    end
+    shared_insert_nvd(db, &insert_proc)
+
     db.close
   end
 
   def create_cvss_v2
     db = SQLite3::Database.new("./#{@config['db_path']}/cvss_v2.sqlite3")
     create_table_cvss_v2(db)
-    insert_cvss_v2(db)
+
+    insert_proc = proc do |cve_hash|
+      sql = <<-SQL
+      INSERT INTO cvss_v2 (
+      cve, vector_string, access_vector, access_complexity, authentication, confidentiality_impact, integrity_impact, availability_impact, base_score
+      ) values (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      SQL
+
+      cve_hash['CVE_Items'].each do |cve_item|
+        cve = cve_item['cve']['CVE_data_meta']['ID']
+        next unless cve_item['impact'].key?('baseMetricV2')
+
+        cvss = cve_item['impact']['baseMetricV2']['cvssV2']
+        db.execute(
+          sql, cve, cvss['vectorString'], cvss['accessVector'], cvss['accessComplexity'], cvss['authentication'],
+          cvss['confidentialityImpact'], cvss['integrityImpact'], cvss['availabilityImpact'], cvss['baseScore']
+        )
+      end
+    end
+    shared_insert_nvd(db, &insert_proc)
+
     db.close
   end
 
   def create_cvss_v3
     db = SQLite3::Database.new("./#{@config['db_path']}/cvss_v3.sqlite3")
     create_table_cvss_v3(db)
-    insert_cvss_v3(db)
+
+    insert_proc = proc do |cve_hash|
+      sql = <<-SQL
+      INSERT INTO cvss_v3 (
+      cve, vector_string, attack_vector, attack_complexity, privileges_required, user_interaction, scope, confidentiality_impact, integrity_impact, availability_impact,
+      base_score, base_severity) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      SQL
+
+      cve_hash['CVE_Items'].each do |cve_item|
+        cve = cve_item['cve']['CVE_data_meta']['ID']
+        next unless cve_item['impact'].key?('baseMetricV3')
+
+        cvss = cve_item['impact']['baseMetricV3']['cvssV3']
+        db.execute(
+          sql, cve, cvss['vectorString'], cvss['attackVector'], cvss['attackComplexity'], cvss['privilegesRequired'], cvss['userInteraction'], cvss['scope'],
+          cvss['confidentialityImpact'], cvss['integrityImpact'], cvss['availabilityImpact'], cvss['baseScore'], cvss['baseSeverity']
+        )
+      end
+    end
+    shared_insert_nvd(db, &insert_proc)
+
     db.close
   end
 
@@ -107,24 +187,6 @@ class DB
     db.execute(sql)
   end
 
-  def insert_cve(db)
-    sql = <<-SQL
-    INSERT INTO cve (cve, nvd_id, description) values (?, ?, ?)
-    SQL
-
-    @years.times do |i|
-      File.open("./#{@config['src_path']}/nvd/nvdcve-1.1-#{@base_year + i}.json") do |file|
-        cve_hash = JSON.parse(file.read)
-        db.transaction do
-          cve_hash['CVE_Items'].each_with_index do |cve_item, nvd_id|
-            cve = cve_item['cve']['CVE_data_meta']['ID']
-            cve_item['cve']['description']['description_data'].each { |description| db.execute(sql, cve, nvd_id, description['value']) }
-          end
-        end
-      end
-    end
-  end
-
   def create_table_cwe(db)
     sql = <<-SQL
     CREATE TABLE cwe (
@@ -136,26 +198,6 @@ class DB
     db.execute(sql)
   end
 
-  def insert_cwe(db)
-    sql = <<-SQL
-    INSERT INTO cwe (cve, cwe) values (?, ?)
-    SQL
-
-    @years.times do |i|
-      File.open("./#{@config['src_path']}/nvd/nvdcve-1.1-#{@base_year + i}.json") do |file|
-        cve_hash = JSON.parse(file.read)
-        db.transaction do
-          cve_hash['CVE_Items'].each do |cve_item|
-            cve = cve_item['cve']['CVE_data_meta']['ID']
-            cve_item['cve']['problemtype']['problemtype_data'].each do |problemtype_data|
-              problemtype_data['description'].each { |cwe_description| db.execute(sql, cve, cwe_description['value']) }
-            end
-          end
-        end
-      end
-    end
-  end
-
   def create_table_cpe(db)
     sql = <<-SQL
     CREATE TABLE cpe (
@@ -165,26 +207,6 @@ class DB
     )
     SQL
     db.execute(sql)
-  end
-
-  def insert_cpe(db)
-    sql = <<-SQL
-    INSERT INTO cpe (cve, cpe) values (?, ?)
-    SQL
-
-    @years.times do |i|
-      File.open("./#{@config['src_path']}/nvd/nvdcve-1.1-#{@base_year + i}.json") do |file|
-        cve_hash = JSON.parse(file.read)
-        db.transaction do
-          cve_hash['CVE_Items'].each do |cve_item|
-            cve = cve_item['cve']['CVE_data_meta']['ID']
-            cve_item['configurations']['nodes'].each do |node|
-              node['cpe_match'].each { |cpe| db.execute(sql, cve, cpe['cpe23Uri']) } if node.key?('cpe_match')
-            end
-          end
-        end
-      end
-    end
   end
 
   def create_table_cvss_v2(db)
@@ -204,39 +226,6 @@ class DB
     )
     SQL
     db.execute(sql)
-  end
-
-  def insert_cvss_v2(db)
-    sql = <<-SQL
-    INSERT INTO cvss_v2 (
-    cve, vector_string,
-    access_vector, access_complexity,
-    authentication, confidentiality_impact,
-    integrity_impact, availability_impact,
-    base_score
-    ) values (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    SQL
-
-    @years.times do |i|
-      File.open("./#{@config['src_path']}/nvd/nvdcve-1.1-#{@base_year + i}.json") do |file|
-        cve_hash = JSON.parse(file.read)
-        db.transaction do
-          cve_hash['CVE_Items'].each do |cve_item|
-            cve = cve_item['cve']['CVE_data_meta']['ID']
-            next unless cve_item['impact'].key?('baseMetricV2')
-
-            cvss = cve_item['impact']['baseMetricV2']['cvssV2']
-            db.execute(
-              sql, cve,
-              cvss['vectorString'], cvss['accessVector'],
-              cvss['accessComplexity'], cvss['authentication'],
-              cvss['confidentialityImpact'], cvss['integrityImpact'],
-              cvss['availabilityImpact'], cvss['baseScore']
-            )
-          end
-        end
-      end
-    end
   end
 
   def create_table_cvss_v3(db)
@@ -260,41 +249,6 @@ class DB
     db.execute(sql)
   end
 
-  def insert_cvss_v3(db)
-    sql = <<-SQL
-    INSERT INTO cvss_v3 (
-    cve, vector_string,
-    attack_vector, attack_complexity,
-    privileges_required, user_interaction,
-    scope, confidentiality_impact,
-    integrity_impact, availability_impact,
-    base_score, base_severity
-    ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    SQL
-
-    @years.times do |i|
-      File.open("./#{@config['src_path']}/nvd/nvdcve-1.1-#{@base_year + i}.json") do |file|
-        cve_hash = JSON.parse(file.read)
-        db.transaction do
-          cve_hash['CVE_Items'].each do |cve_item|
-            cve = cve_item['cve']['CVE_data_meta']['ID']
-            next unless cve_item['impact'].key?('baseMetricV3')
-
-            cvss = cve_item['impact']['baseMetricV3']['cvssV3']
-            db.execute(
-              sql, cve,
-              cvss['vectorString'], cvss['attackVector'],
-              cvss['attackComplexity'], cvss['privilegesRequired'],
-              cvss['userInteraction'], cvss['scope'],
-              cvss['confidentialityImpact'], cvss['integrityImpact'],
-              cvss['availabilityImpact'], cvss['baseScore'], cvss['baseSeverity']
-            )
-          end
-        end
-      end
-    end
-  end
-
   def create_table_vultest(db)
     sql = <<-SQL
     CREATE TABLE configs (
@@ -307,6 +261,15 @@ class DB
     SQL
 
     db.execute(sql)
+  end
+
+  def shared_insert_nvd(db, &block)
+    @years.times do |i|
+      File.open("./#{@config['src_path']}/nvd/nvdcve-1.1-#{@base_year + i}.json") do |file|
+        cve_hash = JSON.parse(file.read)
+        db.transaction { block.call(cve_hash) }
+      end
+    end
   end
 
   def insert_vultest(db)
