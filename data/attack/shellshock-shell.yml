@@ -7,6 +7,6 @@ metasploit:
       - name: RHOST
         var: 192.168.177.177
       - name: TARGETURI
-        var: http://192.168.33.10/cgi-bin/test.cgi
+        var: http://192.168.177.177/cgi-bin/test.cgi
       - name: PAYLOAD
         var: linux/x86/shell_bind_tcp
