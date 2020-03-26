@@ -25,19 +25,19 @@
       attack_path: data/attack/cve-2017-11467-module.yml
 - vuln:
     cve: CVE-2014-6271
-    name: shellshock-meterpreter
+    name: ShellShock(meterpreter)
     data:
       env_path: data/env/shellshock.yml
       attack_path: data/attack/shellshock.yml
 - vuln:
     cve: CVE-2014-6271
-    name: shellshock-shell
+    name: ShellShock(shell)
     data:
       env_path: data/env/shellshock.yml
       attack_path: data/attack/shellshock-shell.yml
 - vuln:
     cve: CVE-2014-6271
-    name: yum-httpd
+    name: "CVE-2014-6271(yum install httpd)"
     data:
       env_path: data/env/shellshock-yum-httpd.yml
       attack_path: data/attack/shellshock.yml
