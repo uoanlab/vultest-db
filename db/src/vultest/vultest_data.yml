@@ -42,6 +42,12 @@
       env_path: data/env/shellshock-yum-httpd.yml
       attack_path: data/attack/shellshock.yml
 - vuln:
+    cve: CVE-2014-6271
+    name: "CVE-2014-6271(yum install latest)"
+    data:
+      env_path: ./data/env/shellshock-yum-latest.yml
+      attack_path: data/attack/shellshock.yml
+- vuln:
     cve: CVE-2019-0708
     name: BlueKeep
     data:

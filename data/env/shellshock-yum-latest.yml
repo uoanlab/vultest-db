@@ -1,0 +1,22 @@
+cve: CVE-2014-6271
+attack_vector: remote
+
+reload: true
+construction:
+  os:
+    name: centos
+    version: 6.5
+    default_method: yum
+  vul_software:
+    name: bash
+    version: 4.3.20
+    method: source
+  related_software:
+    - name: gcc
+    - name: make
+    - name: pcre
+    - name: wget
+    - name: httpd
+  services:
+    - httpd
+  content: content/CVE-2014-6271/yum-httpd
