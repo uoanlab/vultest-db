@@ -20,7 +20,7 @@ construction:
       version: 7.8-6.el6
     - name: wget
       version: 1.12-10.el6
-    - name: apache-httpd
+    - name: httpd
       version: 2.2.15
       configure_options:
         prefix: /opt/httpd
