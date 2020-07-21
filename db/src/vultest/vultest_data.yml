@@ -53,3 +53,10 @@
     data:
       env_path: data/env/cve-2019-0708.yml
       attack_path: data/attack/cve-2019-0708-module.yml
+
+- vuln:
+    cve: CVE-2017-5487
+    name: "Wordpress 4.7"
+    data:
+      env_path: data/env/wordpress-vulnerability.yml
+      attack_path: data/attack/cve-2017-5478.yml
