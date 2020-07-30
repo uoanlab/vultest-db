@@ -22,7 +22,6 @@ construction:
       version: 1.12-10.el6
     - name: httpd
       version: 2.2.15
-      configure_options:
-        prefix: /opt/httpd
+      configure: "./configure --prefix=/opt/httpd"
       method: source
   content: content/CVE-2014-6271/shellshock
