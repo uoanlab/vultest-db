@@ -20,9 +20,8 @@ construction:
       version: 7.8-6.el6
     - name: wget
       version: 1.12-10.el6
-    - name: apache-httpd
+    - name: httpd
       version: 2.2.15
-      configure_command: "./configure --prefix=/opt/httpd"
+      configure: "./configure --prefix=/opt/httpd"
       method: source
   content: content/CVE-2014-6271/shellshock
-
