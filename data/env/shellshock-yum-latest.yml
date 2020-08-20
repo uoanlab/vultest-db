@@ -7,16 +7,46 @@ construction:
     name: centos
     version: 6.5
     default_method: yum
-  vul_software:
-    name: bash
-    version: 4.3.20
-    method: source
-  related_software:
+
+  softwares:
     - name: gcc
+
     - name: make
+
     - name: pcre
+
     - name: wget
+
     - name: httpd
-  services:
-    - httpd
-  content: content/CVE-2014-6271/yum-httpd
+      config:
+        post_config:
+          - name: cgi
+            type: create_file
+            path: /var/www/cgi-bin/test.cgi
+            owner: vagrant
+            group: wheel
+            mode: "0755"
+            content: |-
+              #!/bin/bash
+              echo "Content-type: text/plain"
+              echo
+              echo "Hello world"
+      service:
+        linux_daemon: httpd
+
+    - name: bash
+      vulnerability: true
+      version: 4.3.20
+      patch: true
+      method: source
+      src_dir: /usr/local/src
+      config:
+        pre_config:
+          configure: ./configure
+        build:
+          method: make
+        post_config:
+          - name: loginshell
+            type: add_to_file
+            path: /etc/shells
+            content: /usr/local/bin/bash
