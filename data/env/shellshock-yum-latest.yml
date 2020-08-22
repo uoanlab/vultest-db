@@ -43,8 +43,6 @@ construction:
       config:
         pre_config:
           configure: ./configure
-        build:
-          method: make
         post_config:
           - name: loginshell
             type: add_to_file

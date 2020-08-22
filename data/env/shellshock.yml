@@ -29,8 +29,6 @@ construction:
       config:
         pre_config:
           configure: ./configure --prefix=/opt/httpd
-        build:
-          method: make
         post_config:
           - name: cgi
             type: create_file
@@ -55,8 +53,6 @@ construction:
       config:
         pre_config:
           configure: ./configure
-        build:
-          method: make
         post_config:
           - name: loginshell
             type: add_to_file
