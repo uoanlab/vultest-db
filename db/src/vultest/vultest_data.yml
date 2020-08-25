@@ -15,25 +15,25 @@
 
 - vuln:
     cve: CVE-2014-6271
-    name: ShellShock(meterpreter)
+    name: "AttackMehtod: meterpreter, Vulenv: httpd, bash(source install)"
     data:
       env_path: data/env/shellshock.yml
       attack_path: data/attack/shellshock.yml
 - vuln:
     cve: CVE-2014-6271
-    name: ShellShock(shell)
+    name: "AttackMehtod: shell, Vulenv: httpd, bash(source install)"
     data:
       env_path: data/env/shellshock.yml
       attack_path: data/attack/shellshock-shell.yml
 - vuln:
     cve: CVE-2014-6271
-    name: "CVE-2014-6271(yum install httpd)"
+    name: "bash: source install , other: package install, httpd:  2.2.15-69.el6.centos"
     data:
       env_path: data/env/shellshock-yum-httpd.yml
       attack_path: data/attack/shellshock.yml
 - vuln:
     cve: CVE-2014-6271
-    name: "CVE-2014-6271(yum install latest)"
+    name: "bash: source install , other: package install"
     data:
       env_path: ./data/env/shellshock-yum-latest.yml
       attack_path: data/attack/shellshock.yml
