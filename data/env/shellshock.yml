@@ -6,7 +6,6 @@ construction:
   os:
     name: centos
     version: 6.5
-    default_method: yum
 
   softwares:
     - name: gcc
@@ -30,19 +29,19 @@ construction:
         pre_config:
           configure: ./configure --prefix=/opt/httpd
         post_config:
-          - name: cgi
-            type: create_file
-            path: /opt/httpd/cgi-bin/test.cgi
-            owner: vagrant
-            group: wheel
-            mode: "0755"
-            content: |-
-              #!/bin/bash
-              echo "Content-type: text/plain"
-              echo
-              echo "Hello world"
-      service:
-        command: /opt/httpd/bin/apachectl start
+          - name: create_cgi_file
+            file_create:
+              path: /opt/httpd/cgi-bin/test.cgi
+              owner: vagrant
+              group: wheel
+              mode: "0755"
+              content: |-
+                #!/bin/bash
+                echo "Content-type: text/plain"
+                echo
+                echo "Hello world"
+          - name: apachectl
+            command: /opt/httpd/bin/apachectl start
 
     - name: bash
       vulnerability: true
@@ -54,7 +53,7 @@ construction:
         pre_config:
           configure: ./configure
         post_config:
-          - name: loginshell
-            type: add_to_file
-            path: /etc/shells
-            content: /usr/local/bin/bash
+          - name: add_loginshell
+            file_add:
+              path: /etc/shells
+              content: /usr/local/bin/bash
