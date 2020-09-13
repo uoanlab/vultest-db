@@ -24,7 +24,7 @@ construction:
       version: 2.2.15-69.el6.centos
       config:
         post_config:
-          - name: create_cgi_file
+          - name: setting_cgi
             file_create:
               path: /var/www/cgi-bin/test.cgi
               owner: vagrant
@@ -48,7 +48,7 @@ construction:
         pre_config:
           configure: ./configure
         post_config:
-          - name: add_loginshell
+          - name: setting_loginshell
             file_add:
               path: /etc/shells
               content: /usr/local/bin/bash
