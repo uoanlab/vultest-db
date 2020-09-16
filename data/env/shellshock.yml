@@ -6,22 +6,54 @@ construction:
   os:
     name: centos
     version: 6.5
-    default_method: yum
-  vul_software:
-    name: bash
-    version: 4.3.20
-    method: source
-  related_software:
+
+  softwares:
     - name: gcc
       version: 4.4.7-23.el6
+
     - name: make
       version: 3.81-23.el6
+
     - name: pcre
       version: 7.8-6.el6
+
     - name: wget
       version: 1.12-10.el6
+
     - name: httpd
       version: 2.2.15
-      configure: "./configure --prefix=/opt/httpd"
       method: source
-  content: content/CVE-2014-6271/shellshock
+      src_dir: /usr/local/src
+      path: /opt/httpd
+      config:
+        pre_config:
+          configure: ./configure --prefix=/opt/httpd
+        post_config:
+          - name: setting_cgi
+            file_create:
+              path: /opt/httpd/cgi-bin/test.cgi
+              owner: vagrant
+              group: wheel
+              mode: "0755"
+              content: |-
+                #!/bin/bash
+                echo "Content-type: text/plain"
+                echo
+                echo "Hello world"
+          - name: apachectl
+            command: /opt/httpd/bin/apachectl start
+
+    - name: bash
+      vulnerability: true
+      version: 4.3.20
+      patch: true
+      method: source
+      src_dir: /usr/local/src
+      config:
+        pre_config:
+          configure: ./configure
+        post_config:
+          - name: setting_loginshell
+            file_add:
+              path: /etc/shells
+              content: /usr/local/bin/bash
