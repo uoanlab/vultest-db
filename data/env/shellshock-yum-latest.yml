@@ -1,5 +1,6 @@
-cve: CVE-2014-6271
-attack_vector: remote
+vulnerability:
+  cve: CVE-2014-6271
+  attack_vector: remote
 
 host:
   reload: true
