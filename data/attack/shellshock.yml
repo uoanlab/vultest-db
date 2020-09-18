@@ -1,4 +1,6 @@
-cve: CVE-2014-6271
+vulnerability:
+  cve: CVE-2014-6271
+  attack_vector: remote
 
 metasploit:
   - module_type: exploit
