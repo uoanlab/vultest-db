@@ -8,7 +8,7 @@ host:
     name: centos
     version: 6.5
 
-  softwares:
+  software:
     - name: gcc
       version: 4.4.7-23.el6
 
