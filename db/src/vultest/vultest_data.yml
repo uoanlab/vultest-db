@@ -58,3 +58,11 @@
     data:
       env_path: data/env/cve-2015-3224.yml
       attack_path: data/attack/cve-2015-3224-module.yml
+
+- vuln:
+    cve: CVE-2019-14287
+    name: "1.8.9p5-1ubuntu1.4"
+    data:
+      env_path: data/env/cve-2019-14287.yml
+      attack_path: data/attack/cve-2019-14287-attack.yml
+
